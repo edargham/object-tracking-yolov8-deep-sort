@@ -1,20 +1,17 @@
-# object-tracking-yolov8-deep-sort
-
-Yolov8 object detection + deep sort object tracking !
-
-[![Watch the video](https://img.youtube.com/vi/jIRRuGN0j5E/0.jpg)](https://www.youtube.com/watch?v=jIRRuGN0j5E)
-
-## requirements
-
-- Python 3.7
-- requirements.txt
+# Object Tracking using YOLOv8 and Deep Sort.
+Repository forked from: [computervisioneng/object-tracking-yolov8-deep-sort](https://github.com/computervisioneng/object-tracking-yolov8-deep-sort)
 
 ## Deep Sort
-
-We are working on [this fork](https://github.com/computervisiondeveloper/deep_sort) from deep sort official implementation.
-
 You can download deep sort feature extraction model [here](https://drive.google.com/open?id=18fKzfqnqhqW3s9zwsCbnVJ5XF2JFeqMp).
 
-## data
+## License
+This project is licensed under the GNU General Public License (GPL) version 3.0. 
 
-You can download the same data I use in the video [here](https://drive.google.com/drive/folders/1kZ0QVwlwMERyTyi5c72GeqKgr8qAUx2o?usp=sharing).
+The object-tracking-yolov8-deep-sort project incorporates modifies and uses the following open source software components, which are distributed under their respective licenses:
+
+- Yolov8 Object Detection with Ultralytics: [GitHub repository](https://github.com/ultralytics/ultralytics)
+- Deep Sort Object Tracking: [GitHub repository](https://github.com/nwojke/deep_sort)
+
+Please refer to the individual repositories for the specific license terms and conditions of each component.
+
+You can find the full text of the GNU General Public License (GPL) version 3.0 [here](https://www.gnu.org/licenses/gpl-3.0.en.html).
