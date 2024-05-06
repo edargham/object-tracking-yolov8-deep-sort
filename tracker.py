@@ -20,10 +20,10 @@ class Tracker:
     self.tracker = DeepSortTracker(metric)
     self.encoder = gdet.create_box_encoder(encoder_model_filename, batch_size=1)
 
-  def update(self, frame, detections):
+  def update(self, frame, detections, on_delete=None):
     if len(detections) == 0:
       self.tracker.predict()
-      self.tracker.update([])  
+      self.tracker.update([], frame=frame, on_delete=on_delete)  
       self.update_tracks()
       return
 
@@ -46,7 +46,7 @@ class Tracker:
       )
 
     self.tracker.predict()
-    self.tracker.update(dets)
+    self.tracker.update(dets, frame=frame, on_delete=on_delete)
     self.update_tracks()
 
   def update_tracks(self):

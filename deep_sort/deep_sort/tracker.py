@@ -55,7 +55,7 @@ class Tracker:
     for track in self.tracks:
       track.predict(self.kf)
 
-  def update(self, detections, on_delete=None):
+  def update(self, detections, frame=None, on_delete=None):
     """Perform measurement update and track management.
 
     Parameters
@@ -79,8 +79,8 @@ class Tracker:
     for detection_idx in unmatched_detections:
       self._initiate_track(detections[detection_idx])
 
-    self.tracks = [t for t in self.tracks if not t.is_deleted()]
     self.tracks_to_delete = [t for t in self.tracks if t.is_deleted()]
+    self.tracks = [t for t in self.tracks if not t.is_deleted()]
 
     # Update distance metric.
     active_targets = [t.track_id for t in self.tracks if t.is_confirmed()]
@@ -101,7 +101,7 @@ class Tracker:
     
     if on_delete is not None:
       for track in self.tracks_to_delete:
-        on_delete(track)
+        on_delete(track, frame)
 
   def _match(self, detections):
     def gated_metric(tracks, dets, track_indices, detection_indices):
