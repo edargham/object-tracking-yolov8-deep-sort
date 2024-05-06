@@ -4,6 +4,24 @@ Repository forked from: [computervisioneng/object-tracking-yolov8-deep-sort](htt
 ## Deep Sort
 You can download deep sort feature extraction model [here](https://drive.google.com/open?id=18fKzfqnqhqW3s9zwsCbnVJ5XF2JFeqMp).
 
+## Docker
+You can build this project as a docker container.
+
+```bash
+$ docker build . -t <image-name>
+```
+
+Run it using this command.
+
+```bash
+$ docker run --rm -it --gpus all --net=host --privileged -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY <image-name> --source <source-path>
+```
+This project is intended to complement the ExpansionNetV2 serving fork I built [here](https://github.com/edargham/ExpansionNetV2). You can send the tracked object for image captioning by following the build and run process of the other project, and here using:
+
+```bash
+docker run --rm -it --gpus all --net=host --privileged -v /tmp/.X11-unix:/tmp/.X11-unix -v <host-out-dir>:/<container-out-dir> -e DISPLAY=$DISPLAY <image-name> --source <source-path> --output /<container-out-dir> --caption_url <expansion-net-serving-url> --port <expansion-net-serving-port>
+```
+
 ## License
 This project is licensed under the GNU General Public License (GPL) version 3.0. 
 
