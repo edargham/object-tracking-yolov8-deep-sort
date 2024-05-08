@@ -4,6 +4,7 @@ import random
 import uuid
 import multiprocessing
 
+import textwrap
 import numpy as np
 import cv2
 import requests
@@ -24,40 +25,58 @@ def process_track(track: Track, frame: np.ndarray):
     _, encoded_image = cv2.imencode('.jpg', crop)
     crop_base64 = base64.b64encode(encoded_image).decode()
 
-    endpoint_url = f'{caption_url}:{caption_url_port}/predictions/expansion-net-v2/'
-    payload = {'image': crop_base64}
-    response = requests.post(endpoint_url, json=payload)
-    
-    if response.status_code == 200:
-      print('image sent successfully')
-      caption = response.content.decode()
-
-      if not os.path.exists(out_dir):
-        os.makedirs(out_dir)
-
-      uuid_str = str(uuid.uuid4())
-      os.makedirs(os.path.join(out_dir, uuid_str), exist_ok=True)
+    try:
+      endpoint_url = f'{caption_url}:{caption_url_port}/predictions/expansion-net-v2/'
+      payload = {'image': crop_base64}
+      response = requests.post(endpoint_url, json=payload)
       
-      crop_path = os.path.join(out_dir, uuid_str, f'image.jpg')
-      cv2.imwrite(crop_path, crop)
+      if response.status_code == 200:
+        print('image sent successfully')
+        caption = response.content.decode()
+        print('Caption', caption)
+        wrapped_text = textwrap.wrap(caption, width=35)
+        if not os.path.exists(out_dir):
+          os.makedirs(out_dir)
 
-      caption_path = os.path.join(out_dir, uuid_str, f'caption.txt')
-      with open(caption_path, 'w') as f:
-        f.write(caption)
-    else:
-      print('Failed to send crop')
+        uuid_str = str(uuid.uuid4())
+        os.makedirs(os.path.join(out_dir, uuid_str), exist_ok=True)
+        
+        crop_path = os.path.join(out_dir, uuid_str, f'image.jpg')
+        cv2.imwrite(crop_path, crop)
 
+        y = 0
+
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        font_scale = 1
+        thickness = 2
+        color = (255, 0, 0)
+        (_, line_height), _ = cv2.getTextSize('A', font, font_scale, thickness)
+        
+        for line in wrapped_text:
+          y += line_height + 10
+        
+        crop = cv2.putText(crop, caption, (10, y), font, font_scale, color, thickness, cv2.LINE_AA)
+        cv2.imshow('Image', crop)
+
+        caption_path = os.path.join(out_dir, uuid_str, f'caption.txt')
+        with open(caption_path, 'w') as f:
+          f.write(caption)
+      else:
+        print('Failed to send crop. status code:', response.status_code)
+    except Exception as e:
+      print('Failed to send crop:', e)
 def on_delete(track: Track, frame: np.ndarray):
-  p = multiprocessing.Process(target=process_track, args=(track, frame))
-  p.start()
-
+  #p = multiprocessing.Process(target=process_track, args=(track, frame))
+  #p.start()
+  process_track(track, frame)
+  
 def main(source: str):
   cap = cv2.VideoCapture(source, cv2.CAP_FFMPEG)
   if not cap.isOpened():
     print("Failed to open video source")
     return
   
-  model = YOLO("yolov8s.pt")
+  model = YOLO("yolov8n.pt")
   model.classes = [0, 1, 2, 3, 4, 5, 6, 7, 15, 16, 17]
   classes = model.names
 
